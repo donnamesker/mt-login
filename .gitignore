@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Composer
+/vendor/
+
+# npm
+/node_modules/
+
+# Environment configuration
+.env
+.env.*
+!.env.example
+
+# Application logs
+/storage/logs/*
