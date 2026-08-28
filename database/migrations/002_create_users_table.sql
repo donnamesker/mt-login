@@ -1,16 +1,18 @@
-CREATE TABLE tenants (
+CREATE TABLE users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     name VARCHAR(255) NOT NULL,
 
-    subscription_status VARCHAR(50) NOT NULL DEFAULT 'trial',
+    email VARCHAR(255) NOT NULL,
+
+    password_hash VARCHAR(255) NOT NULL,
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
-    INDEX idx_tenants_subscription_status (subscription_status)
+    UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;

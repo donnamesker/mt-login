@@ -1,0 +1,12 @@
+Term	Meaning
+Tenant	Customer/account that pays for the SaaS subscription
+Business	A business owned/managed within the tenant
+User	Person with an application login
+Tenant User	User who has access to the tenant
+Business User	User who has access to a specific business
+Role	What the user is allowed to do
+
+
+The application will enforce the rule
+A user must be a member of a tenant before they can be assigned to one of that tenant's businesses.
+We'll enforce that in the application/service layer, and we'll design our authorization layer around it.
