@@ -13,6 +13,7 @@ return static function (Router $router): void {
 
     $router->get('/login', [LoginController::class, 'show']);
     $router->post('/login', [LoginController::class, 'login']);
+    $router->post('/logout', [LoginController::class, 'logout']);
 
     $router->get('/dashboard', [DashboardController::class, 'index']);
 

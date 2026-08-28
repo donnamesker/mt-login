@@ -84,6 +84,27 @@ class LoginController
     }
 
     /**
+     * Log the current user out.
+     */
+    public function logout(): void
+    {
+        $this->session->start();
+
+        $token = $_POST['_csrf_token'] ?? null;
+
+        if (!$this->csrf->verify($token)) {
+            http_response_code(403);
+            echo '403 - Invalid CSRF token';
+            return;
+        }
+
+        $this->session->logout();
+
+        header('Location: /login');
+        exit;
+    }
+
+    /**
      * Display a login error.
      */
     private function showError(
@@ -96,4 +117,5 @@ class LoginController
             'email' => $email
         ]);
     }
+    
 }
