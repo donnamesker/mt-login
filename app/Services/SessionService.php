@@ -84,6 +84,66 @@ class SessionService
     }
 
     /**
+     * Set the currently selected tenant.
+     */
+    public function setTenantId(int $tenantId): void
+    {
+        $this->start();
+
+        if ($tenantId <= 0) {
+            throw new RuntimeException(
+                'Invalid tenant ID.'
+            );
+        }
+
+        $_SESSION['tenant_id'] = $tenantId;
+    }
+
+    /**
+     * Get the currently selected tenant ID.
+     */
+    public function tenantId(): ?int
+    {
+        $this->start();
+
+        if (!isset($_SESSION['tenant_id'])) {
+            return null;
+        }
+
+        return (int) $_SESSION['tenant_id'];
+    }
+
+    /**
+     * Set the currently selected business.
+     */
+    public function setBusinessId(int $businessId): void
+    {
+        $this->start();
+
+        if ($businessId <= 0) {
+            throw new RuntimeException(
+                'Invalid business ID.'
+            );
+        }
+
+        $_SESSION['business_id'] = $businessId;
+    }
+
+    /**
+     * Get the currently selected business ID.
+     */
+    public function businessId(): ?int
+    {
+        $this->start();
+
+        if (!isset($_SESSION['business_id'])) {
+            return null;
+        }
+
+        return (int) $_SESSION['business_id'];
+    }
+
+    /**
      * Log the current user out.
      */
     public function logout(): void

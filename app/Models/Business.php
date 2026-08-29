@@ -49,7 +49,7 @@ class Business
 
         $stmt->execute([
             'tenant_id' => $tenantId
-        );
+        ]);
 
         return $stmt->fetchAll();
     }
