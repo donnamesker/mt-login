@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\DashboardController;
+use App\Controllers\AccountController;
 use App\Controllers\HomeController;
 use App\Controllers\OnboardingController;
 use App\Controllers\ContextController;
@@ -22,8 +23,8 @@ return static function (Router $router): void {
     $router->post('/register', [RegisterController::class, 'register']);
 
     $router->get('/dashboard', [DashboardController::class, 'index']);
-
-    $router->get('/onboarding', [OnboardingController::class, 'show']);
+    
+    $router->get('/account', [AccountController::class, 'index']);
 
     $router->post('/onboarding', [OnboardingController::class, 'create']);
 

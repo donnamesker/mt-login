@@ -50,11 +50,12 @@ $title = $title ?? 'Mesker Financial';
 
         <div class="d-flex align-items-center gap-2">
 
-            <a
-                href="/dashboard"
-                class="btn btn-outline-primary"
-            >
+            <a href="/dashboard" class="btn btn-outline-primary">
                 Dashboard
+            </a>
+
+            <a href="/account" class="btn btn-outline-primary">
+                Account
             </a>
 
             <form
