@@ -100,4 +100,69 @@ class ContextService
             'availableBusinesses' => $availableBusinesses
         ];
     }
+    /**
+     * Switch the current tenant/account.
+     *
+     * Verifies that the authenticated user belongs to the
+     * tenant before changing the session context.
+     */
+    public function switchTenant(int $tenantId): void
+    {
+        $userId = $this->auth->id();
+
+        if ($userId === null) {
+            throw new \RuntimeException('Authentication required.');
+        }
+
+        if (!$this->authorization->canAccessTenant(
+            $userId,
+            $tenantId
+        )) {
+            throw new \RuntimeException('Unauthorized tenant access.');
+        }
+
+        $businesses = $this->businesses->forUser(
+            $userId,
+            $tenantId
+        );
+
+        if ($businesses === []) {
+            throw new \RuntimeException(
+                'No accessible businesses exist in this account.'
+            );
+        }
+
+        $this->session->setTenantId($tenantId);
+        $this->session->setBusinessId(
+            (int) $businesses[0]['id']
+        );
+    }
+
+    /**
+     * Switch the current business.
+     *
+     * Verifies that the authenticated user can access the
+     * business within the currently selected tenant.
+     */
+    public function switchBusiness(int $businessId): void
+    {
+        $userId = $this->auth->id();
+        $tenantId = $this->session->tenantId();
+
+        if ($userId === null || $tenantId === null) {
+            throw new \RuntimeException(
+                'Authentication and account context are required.'
+            );
+        }
+
+        if (!$this->authorization->canAccessBusiness(
+            $userId,
+            $tenantId,
+            $businessId
+        )) {
+            throw new \RuntimeException('Unauthorized business access.');
+        }
+
+        $this->session->setBusinessId($businessId);
+    }
 }
