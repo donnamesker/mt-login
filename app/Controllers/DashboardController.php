@@ -33,6 +33,11 @@ class DashboardController
             exit;
         }
 
-        View::render('dashboard/index', $context);
+        $contextError = $_GET['context_error'] ?? null;
+
+        View::render('dashboard/index', [
+            'context' => $context,
+            'contextError' => $contextError
+        ]);
     }
 }

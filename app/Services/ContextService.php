@@ -100,6 +100,67 @@ class ContextService
             'availableBusinesses' => $availableBusinesses
         ];
     }
+
+    /**
+     * Establish an initial context for the authenticated user.
+     *
+     * If the user has no selected tenant/business, select the
+     * first tenant and its first accessible business.
+     *
+     * @return bool True if a valid context was established.
+     */
+    public function initialize(): bool
+    {
+        $userId = $this->auth->id();
+
+        if ($userId === null) {
+            return false;
+        }
+
+        $tenantId = $this->session->tenantId();
+        $businessId = $this->session->businessId();
+
+        if ($tenantId !== null && $businessId !== null) {
+            if (
+                $this->authorization->canAccessTenant(
+                    $userId,
+                    $tenantId
+                )
+                && $this->authorization->canAccessBusiness(
+                    $userId,
+                    $tenantId,
+                    $businessId
+                )
+            ) {
+                return true;
+            }
+        }
+
+        $tenants = $this->tenants->forUser($userId);
+
+        if ($tenants === []) {
+            return false;
+        }
+
+        $tenantId = (int) $tenants[0]['id'];
+
+        $businesses = $this->businesses->forUser(
+            $userId,
+            $tenantId
+        );
+
+        if ($businesses === []) {
+            return false;
+        }
+
+        $this->session->setTenantId($tenantId);
+        $this->session->setBusinessId(
+            (int) $businesses[0]['id']
+        );
+
+        return true;
+    }
+
     /**
      * Switch the current tenant/account.
      *

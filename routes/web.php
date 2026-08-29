@@ -7,6 +7,7 @@ use App\Controllers\Auth\RegisterController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
 use App\Controllers\OnboardingController;
+use App\Controllers\ContextController;
 use App\Support\Router;
 
 return static function (Router $router): void {
@@ -22,13 +23,10 @@ return static function (Router $router): void {
 
     $router->get('/dashboard', [DashboardController::class, 'index']);
 
-    $router->get(
-        '/onboarding',
-        [OnboardingController::class, 'show']
-    );
+    $router->get('/onboarding', [OnboardingController::class, 'show']);
 
-    $router->post(
-        '/onboarding',
-        [OnboardingController::class, 'create']
-    );
+    $router->post('/onboarding', [OnboardingController::class, 'create']);
+
+    $router->post('/context/tenant', [ContextController::class, 'switchTenant']);
+    $router->post('/context/business', [ContextController::class, 'switchBusiness']);
 };

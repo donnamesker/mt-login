@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+
+$contextUser = $context['user'];
+$contextTenant = $context['tenant'];
+$contextBusiness = $context['business'];
+$availableTenants = $context['availableTenants'];
+$availableBusinesses = $context['availableBusinesses'];
 ?>
 
 <!DOCTYPE html>
@@ -64,17 +70,31 @@ declare(strict_types=1);
 </nav>
 
 <main class="container py-5">
+    <?php if (
+        isset($contextError)
+        && $contextError !== null
+    ): ?>
+
+        <div class="alert alert-danger" role="alert">
+            <?= htmlspecialchars(
+                $contextError,
+                ENT_QUOTES,
+                'UTF-8'
+            ) ?>
+        </div>
+
+    <?php endif; ?>
 
     <h1 class="mb-4">
         Dashboard
     </h1>
 
-    <?php if ($user !== null): ?>
+    <?php if ($contextUser !== null): ?>
 
         <p class="lead">
             Welcome,
             <?= htmlspecialchars(
-                $user['name'],
+                $contextUser['name'],
                 ENT_QUOTES,
                 'UTF-8'
             ) ?>.
@@ -84,7 +104,7 @@ declare(strict_types=1);
             You are signed in as
             <strong>
                 <?= htmlspecialchars(
-                    $user['email'],
+                    $contextUser['email'],
                     ENT_QUOTES,
                     'UTF-8'
                 ) ?>
@@ -94,51 +114,157 @@ declare(strict_types=1);
         <div class="row mt-4">
 
             <div class="col-md-6">
-
                 <div class="card mb-4">
-
                     <div class="card-body">
 
                         <h2 class="h5">
                             Account
                         </h2>
 
-                        <p class="mb-0">
+                        <p class="text-muted">
                             <?= htmlspecialchars(
-                                $tenant['name'],
+                                $contextTenant['name'],
                                 ENT_QUOTES,
                                 'UTF-8'
                             ) ?>
                         </p>
 
+                        <form method="POST" action="/context/tenant">
+
+                            <input
+                                type="hidden"
+                                name="_csrf_token"
+                                value="<?= htmlspecialchars(
+                                    (new \App\Support\Csrf())->token(),
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                            >
+
+                            <label
+                                for="tenant_id"
+                                class="form-label"
+                            >
+                                Switch Account
+                            </label>
+
+                            <select
+                                name="tenant_id"
+                                id="tenant_id"
+                                class="form-select"
+                                onchange="this.form.submit()"
+                            >
+                                <?php foreach (
+                                    $availableTenants as $availableTenant
+                                ): ?>
+
+                                    <option
+                                        value="<?= (int) $availableTenant['id'] ?>"
+                                        <?= (int) $availableTenant['id']
+                                            === (int) $contextTenant['id']
+                                            ? 'selected'
+                                            : '' ?>
+                                    >
+                                        <?= htmlspecialchars(
+                                            $availableTenant['name'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+                            </select>
+
+                            <noscript>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary mt-2"
+                                >
+                                    Switch Account
+                                </button>
+                            </noscript>
+
+                        </form>
+
                     </div>
-
                 </div>
-
             </div>
 
             <div class="col-md-6">
-
                 <div class="card mb-4">
-
                     <div class="card-body">
 
                         <h2 class="h5">
                             Current Business
                         </h2>
 
-                        <p class="mb-0">
+                        <p class="text-muted">
                             <?= htmlspecialchars(
-                                $business['name'],
+                                $contextBusiness['name'],
                                 ENT_QUOTES,
                                 'UTF-8'
                             ) ?>
                         </p>
 
+                        <form method="POST" action="/context/business">
+
+                            <input
+                                type="hidden"
+                                name="_csrf_token"
+                                value="<?= htmlspecialchars(
+                                    (new \App\Support\Csrf())->token(),
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                            >
+
+                            <label
+                                for="business_id"
+                                class="form-label"
+                            >
+                                Switch Business
+                            </label>
+
+                            <select
+                                name="business_id"
+                                id="business_id"
+                                class="form-select"
+                                onchange="this.form.submit()"
+                            >
+                                <?php foreach (
+                                    $availableBusinesses as $availableBusiness
+                                ): ?>
+
+                                    <option
+                                        value="<?= (int) $availableBusiness['id'] ?>"
+                                        <?= (int) $availableBusiness['id']
+                                            === (int) $contextBusiness['id']
+                                            ? 'selected'
+                                            : '' ?>
+                                    >
+                                        <?= htmlspecialchars(
+                                            $availableBusiness['name'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+                            </select>
+
+                            <noscript>
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary mt-2"
+                                >
+                                    Switch Business
+                                </button>
+                            </noscript>
+
+                        </form>
+
                     </div>
-
                 </div>
-
             </div>
 
         </div>
@@ -174,7 +300,7 @@ declare(strict_types=1);
 
                                 <?php if (
                                     (int) $availableBusiness['id']
-                                    === (int) $business['id']
+                                    === (int) $contextBusiness['id']
                                 ): ?>
 
                                     <strong>

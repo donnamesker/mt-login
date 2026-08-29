@@ -6,6 +6,7 @@ namespace App\Controllers\Auth;
 
 use App\Services\AuthService;
 use App\Services\SessionService;
+use App\Services\ContextService;
 use App\Support\Csrf;
 use App\Support\View;
 use RuntimeException;
@@ -14,12 +15,14 @@ class LoginController
 {
     private AuthService $auth;
     private SessionService $session;
+    private ContextService $context;
     private Csrf $csrf;
 
     public function __construct()
     {
         $this->auth = new AuthService();
         $this->session = new SessionService();
+        $this->context = new ContextService();
         $this->csrf = new Csrf();
     }
 
@@ -78,6 +81,8 @@ class LoginController
         }
 
         $this->session->login((int) $user['id']);
+
+        $this->context->initialize();
 
         header('Location: /dashboard');
         exit;
