@@ -104,8 +104,9 @@ if ($session->tenantId() !== $tenantId) {
 
 echo "Invalid tenant switch: PASS" . PHP_EOL;
 
-// Create a business in the current tenant that the test user
-// does not belong to.
+// Create a business in the unauthorized tenant.
+// The test user does not belong to the tenant and therefore
+// must not be able to switch to this business.
 echo PHP_EOL;
 echo "Creating unauthorized business..." . PHP_EOL;
 
@@ -115,7 +116,7 @@ $statement = $db->prepare(
 );
 
 $statement->execute([
-    'tenant_id' => $tenantId,
+    'tenant_id' => $unauthorizedTenantId,
     'name' => 'Context Switch Test Unauthorized Business'
 ]);
 
@@ -162,3 +163,4 @@ $db->prepare(
 
 echo PHP_EOL;
 echo "Context switching tests passed." . PHP_EOL;
+?>

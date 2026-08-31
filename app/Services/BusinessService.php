@@ -29,6 +29,12 @@ class BusinessService
         int $userId,
         int $tenantId
     ): array {
+        if ($userId <= 0 || $tenantId <= 0) {
+            throw new RuntimeException(
+                'Valid user and account are required.'
+            );
+        }
+
         if (!$this->authorization->canAccessTenant(
             $userId,
             $tenantId
@@ -52,8 +58,6 @@ class BusinessService
         int $tenantId,
         string $name
     ): int {
-        $name = trim($name);
-
         if ($userId <= 0) {
             throw new RuntimeException(
                 'A valid user is required.'
@@ -66,9 +70,17 @@ class BusinessService
             );
         }
 
+        $name = trim($name);
+
         if ($name === '') {
             throw new RuntimeException(
                 'Business name is required.'
+            );
+        }
+
+        if (mb_strlen($name) > 255) {
+            throw new RuntimeException(
+                'Business name cannot exceed 255 characters.'
             );
         }
 
@@ -90,10 +102,16 @@ class BusinessService
             );
 
             $statement = $this->db->prepare(
-                'INSERT INTO business_users
-                    (business_id, user_id, role)
-                 VALUES
-                    (:business_id, :user_id, :role)'
+                'INSERT INTO business_users (
+                    business_id,
+                    user_id,
+                    role
+                )
+                VALUES (
+                    :business_id,
+                    :user_id,
+                    :role
+                )'
             );
 
             $statement->execute([
