@@ -148,6 +148,21 @@ $canManage = $canManage ?? false;
                                                     value="<?= (int) $business['id'] ?>"
                                                 >
 
+                                                <?php if (
+                                                    !empty(
+                                                        $manageableBusinesses[(int) $business['id']]
+                                                    )
+                                                ): ?>
+
+                                                    <a
+                                                        href="/businesses/users?id=<?= (int) $business['id'] ?>"
+                                                        class="btn btn-sm btn-outline-secondary"
+                                                    >
+                                                        Users
+                                                    </a>
+
+                                                <?php endif; ?>
+
                                                 <button
                                                     type="submit"
                                                     class="btn btn-sm btn-outline-primary"

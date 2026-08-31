@@ -31,15 +31,53 @@ return static function (Router $router): void {
 
     $router->get('/businesses', [BusinessController::class, 'index']);
     $router->post('/businesses', [BusinessController::class, 'create']);
-    $router->get('/businesses/edit', [BusinessController::class, 'edit']);
-    $router->post('/businesses/update', [BusinessController::class, 'update']);
+
+    $router->get(
+        '/businesses/edit',
+        [BusinessController::class, 'edit']
+    );
+
+    $router->post(
+        '/businesses/update',
+        [BusinessController::class, 'update']
+    );
+
+    $router->get(
+        '/businesses/users',
+        [BusinessController::class, 'users']
+    );
+
+    $router->post(
+        '/businesses/users/add',
+        [BusinessController::class, 'addUser']
+    );
+
+    $router->post(
+        '/businesses/users/update',
+        [BusinessController::class, 'updateUserRole']
+    );
+
+    $router->post(
+        '/businesses/users/remove',
+        [BusinessController::class, 'removeUser']
+    );
 
     $router->get('/users', [UserController::class, 'index']);
     $router->get('/users/new', [UserController::class, 'create']);
     $router->post('/users', [UserController::class, 'store']);
 
-    $router->post('/onboarding', [OnboardingController::class, 'create']);
+    $router->post(
+        '/onboarding',
+        [OnboardingController::class, 'create']
+    );
 
-    $router->post('/context/tenant', [ContextController::class, 'switchTenant']);
-    $router->post('/context/business', [ContextController::class, 'switchBusiness']);
+    $router->post(
+        '/context/tenant',
+        [ContextController::class, 'switchTenant']
+    );
+
+    $router->post(
+        '/context/business',
+        [ContextController::class, 'switchBusiness']
+    );
 };
