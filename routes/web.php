@@ -7,6 +7,7 @@ use App\Controllers\Auth\RegisterController;
 use App\Controllers\DashboardController;
 use App\Controllers\AccountController;
 use App\Controllers\BusinessController;
+use App\Controllers\BusinessUserController;
 use App\Controllers\UserController;
 use App\Controllers\HomeController;
 use App\Controllers\OnboardingController;
@@ -32,44 +33,34 @@ return static function (Router $router): void {
     $router->get('/businesses', [BusinessController::class, 'index']);
     $router->post('/businesses', [BusinessController::class, 'create']);
 
-    $router->get(
-        '/businesses/edit',
-        [BusinessController::class, 'edit']
-    );
-
-    $router->post(
-        '/businesses/update',
-        [BusinessController::class, 'update']
-    );
+    $router->get('/businesses/edit', [BusinessController::class, 'edit']);
+    $router->post('/businesses/update', [BusinessController::class, 'update']);
 
     $router->get(
         '/businesses/users',
-        [BusinessController::class, 'users']
+        [BusinessUserController::class, 'index']
     );
 
     $router->post(
         '/businesses/users/add',
-        [BusinessController::class, 'addUser']
+        [BusinessUserController::class, 'add']
     );
 
     $router->post(
         '/businesses/users/update',
-        [BusinessController::class, 'updateUserRole']
+        [BusinessUserController::class, 'update']
     );
 
     $router->post(
         '/businesses/users/remove',
-        [BusinessController::class, 'removeUser']
+        [BusinessUserController::class, 'remove']
     );
 
     $router->get('/users', [UserController::class, 'index']);
     $router->get('/users/new', [UserController::class, 'create']);
     $router->post('/users', [UserController::class, 'store']);
 
-    $router->post(
-        '/onboarding',
-        [OnboardingController::class, 'create']
-    );
+    $router->post('/onboarding', [OnboardingController::class, 'create']);
 
     $router->post(
         '/context/tenant',
