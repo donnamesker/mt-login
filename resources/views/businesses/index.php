@@ -6,14 +6,19 @@ $title = 'Businesses | Mesker Financial';
 
 $errors = $errors ?? [];
 $name = $name ?? '';
-
+$canManage = $canManage ?? false;
 ?>
 
 <div class="container py-5">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
+
         <div>
-            <h1 class="mb-1">Businesses</h1>
+
+            <h1 class="mb-1">
+                Businesses
+            </h1>
+
             <p class="text-muted mb-0">
                 <?= htmlspecialchars(
                     $context['tenant']['name'],
@@ -21,6 +26,7 @@ $name = $name ?? '';
                     'UTF-8'
                 ) ?>
             </p>
+
         </div>
 
         <a
@@ -29,13 +35,17 @@ $name = $name ?? '';
         >
             Dashboard
         </a>
+
     </div>
 
     <?php if ($errors !== []): ?>
 
         <?php foreach ($errors as $error): ?>
 
-            <div class="alert alert-danger" role="alert">
+            <div
+                class="alert alert-danger"
+                role="alert"
+            >
                 <?= htmlspecialchars(
                     $error,
                     ENT_QUOTES,
@@ -49,7 +59,7 @@ $name = $name ?? '';
 
     <div class="row">
 
-        <div class="col-lg-8">
+        <div class="<?= $canManage ? 'col-lg-8' : 'col-lg-12' ?>">
 
             <div class="card mb-4">
 
@@ -150,69 +160,74 @@ $name = $name ?? '';
 
         </div>
 
-        <div class="col-lg-4">
+        <?php if ($canManage): ?>
 
-            <div class="card">
+            <div class="col-lg-4">
 
-                <div class="card-body">
+                <div class="card">
 
-                    <h2 class="h5 mb-3">
-                        Add Business
-                    </h2>
+                    <div class="card-body">
 
-                    <form
-                        method="POST"
-                        action="/businesses"
-                    >
+                        <h2 class="h5 mb-3">
+                            Add Business
+                        </h2>
 
-                        <input
-                            type="hidden"
-                            name="_csrf_token"
-                            value="<?= htmlspecialchars(
-                                $csrfToken,
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>"
+                        <form
+                            method="POST"
+                            action="/businesses"
                         >
 
-                        <div class="mb-3">
-
-                            <label
-                                for="name"
-                                class="form-label"
-                            >
-                                Business Name
-                            </label>
-
                             <input
-                                type="text"
-                                name="name"
-                                id="name"
-                                class="form-control"
+                                type="hidden"
+                                name="_csrf_token"
                                 value="<?= htmlspecialchars(
-                                    $name,
+                                    $csrfToken,
                                     ENT_QUOTES,
                                     'UTF-8'
                                 ) ?>"
-                                required
                             >
 
-                        </div>
+                            <div class="mb-3">
 
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                        >
-                            Add Business
-                        </button>
+                                <label
+                                    for="name"
+                                    class="form-label"
+                                >
+                                    Business Name
+                                </label>
 
-                    </form>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    class="form-control"
+                                    value="<?= htmlspecialchars(
+                                        $name,
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>"
+                                    maxlength="255"
+                                    required
+                                >
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Add Business
+                            </button>
+
+                        </form>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+        <?php endif; ?>
 
     </div>
 

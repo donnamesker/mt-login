@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Services\BusinessService;
+use App\Services\AuthorizationService;
 use App\Support\Csrf;
 use App\Support\View;
 use RuntimeException;
@@ -12,6 +13,7 @@ use RuntimeException;
 class BusinessController extends AuthenticatedController
 {
     private BusinessService $businesses;
+    private AuthorizationService $authorization;
     private Csrf $csrf;
 
     public function __construct()
@@ -19,6 +21,7 @@ class BusinessController extends AuthenticatedController
         parent::__construct();
 
         $this->businesses = new BusinessService();
+        $this->authorization = new AuthorizationService();
         $this->csrf = new Csrf();
     }
 
@@ -29,9 +32,18 @@ class BusinessController extends AuthenticatedController
     {
         $context = $this->requireContext();
 
+        $userId = (int) $context['user']['id'];
+        $tenantId = (int) $context['tenant']['id'];
+
+        $canManage = $this->authorization->canManageTenant(
+            $userId,
+            $tenantId
+        );
+
         View::render('businesses/index', [
             'context' => $context,
             'businesses' => $context['availableBusinesses'],
+            'canManage' => $canManage,
             'csrfToken' => $this->csrf->token(),
             'errors' => []
         ]);
@@ -55,7 +67,9 @@ class BusinessController extends AuthenticatedController
             return;
         }
 
-        $name = trim((string) ($_POST['name'] ?? ''));
+        $name = trim(
+            (string) ($_POST['name'] ?? '')
+        );
 
         try {
             $this->businesses->create(
@@ -77,14 +91,26 @@ class BusinessController extends AuthenticatedController
         exit;
     }
 
+    /**
+     * Display a business creation error.
+     */
     private function showError(
         array $context,
         string $message,
         string $name = ''
     ): void {
+        $userId = (int) $context['user']['id'];
+        $tenantId = (int) $context['tenant']['id'];
+
+        $canManage = $this->authorization->canManageTenant(
+            $userId,
+            $tenantId
+        );
+
         View::render('businesses/index', [
             'context' => $context,
             'businesses' => $context['availableBusinesses'],
+            'canManage' => $canManage,
             'csrfToken' => $this->csrf->token(),
             'errors' => [$message],
             'name' => $name

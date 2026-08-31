@@ -52,12 +52,17 @@ class BusinessService
 
     /**
      * Create a business and make the user its owner.
+     *
+     * Only tenant owners and administrators may create
+     * businesses within the account.
      */
     public function create(
         int $userId,
         int $tenantId,
         string $name
     ): int {
+        $name = trim($name);
+
         if ($userId <= 0) {
             throw new RuntimeException(
                 'A valid user is required.'
@@ -70,26 +75,18 @@ class BusinessService
             );
         }
 
-        $name = trim($name);
-
         if ($name === '') {
             throw new RuntimeException(
                 'Business name is required.'
             );
         }
 
-        if (mb_strlen($name) > 255) {
-            throw new RuntimeException(
-                'Business name cannot exceed 255 characters.'
-            );
-        }
-
-        if (!$this->authorization->canAccessTenant(
+        if (!$this->authorization->canManageTenant(
             $userId,
             $tenantId
         )) {
             throw new RuntimeException(
-                'Unauthorized account access.'
+                'You do not have permission to create businesses in this account.'
             );
         }
 
@@ -102,16 +99,10 @@ class BusinessService
             );
 
             $statement = $this->db->prepare(
-                'INSERT INTO business_users (
-                    business_id,
-                    user_id,
-                    role
-                )
-                VALUES (
-                    :business_id,
-                    :user_id,
-                    :role
-                )'
+                'INSERT INTO business_users
+                    (business_id, user_id, role)
+                 VALUES
+                    (:business_id, :user_id, :role)'
             );
 
             $statement->execute([
