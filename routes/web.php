@@ -31,6 +31,8 @@ return static function (Router $router): void {
 
     $router->get('/businesses', [BusinessController::class, 'index']);
     $router->post('/businesses', [BusinessController::class, 'create']);
+    $router->get('/businesses/edit', [BusinessController::class, 'edit']);
+    $router->post('/businesses/update', [BusinessController::class, 'update']);
 
     $router->get('/users', [UserController::class, 'index']);
     $router->get('/users/new', [UserController::class, 'create']);

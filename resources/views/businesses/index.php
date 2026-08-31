@@ -108,43 +108,58 @@ $canManage = $canManage ?? false;
 
                                     </div>
 
-                                    <?php if (
-                                        (int) $business['id']
-                                        !== (int) $context['business']['id']
-                                    ): ?>
+                                    <div class="d-flex gap-2">
 
-                                        <form
-                                            method="POST"
-                                            action="/context/business"
-                                            class="d-inline"
-                                        >
+                                        <?php if ($canManage): ?>
 
-                                            <input
-                                                type="hidden"
-                                                name="_csrf_token"
-                                                value="<?= htmlspecialchars(
-                                                    $csrfToken,
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                ) ?>"
+                                            <a
+                                                href="/businesses/edit?id=<?= (int) $business['id'] ?>"
+                                                class="btn btn-sm btn-outline-secondary"
+                                            >
+                                                Edit
+                                            </a>
+
+                                        <?php endif; ?>
+
+                                        <?php if (
+                                            (int) $business['id']
+                                            !== (int) $context['business']['id']
+                                        ): ?>
+
+                                            <form
+                                                method="POST"
+                                                action="/context/business"
+                                                class="d-inline"
                                             >
 
-                                            <input
-                                                type="hidden"
-                                                name="business_id"
-                                                value="<?= (int) $business['id'] ?>"
-                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="_csrf_token"
+                                                    value="<?= htmlspecialchars(
+                                                        $csrfToken,
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    ) ?>"
+                                                >
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-outline-primary"
-                                            >
-                                                Switch
-                                            </button>
+                                                <input
+                                                    type="hidden"
+                                                    name="business_id"
+                                                    value="<?= (int) $business['id'] ?>"
+                                                >
 
-                                        </form>
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Switch
+                                                </button>
 
-                                    <?php endif; ?>
+                                            </form>
+
+                                        <?php endif; ?>
+
+                                    </div>
 
                                 </div>
 

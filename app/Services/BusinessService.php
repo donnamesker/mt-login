@@ -81,6 +81,12 @@ class BusinessService
             );
         }
 
+        if (mb_strlen($name) > 255) {
+            throw new RuntimeException(
+                'Business name cannot exceed 255 characters.'
+            );
+        }
+
         if (!$this->authorization->canManageTenant(
             $userId,
             $tenantId
@@ -125,5 +131,79 @@ class BusinessService
                 $e
             );
         }
+    }
+
+    /**
+     * Update a business name.
+     *
+     * Tenant owners/admins and business owners/admins
+     * may update the business.
+     */
+    public function updateName(
+        int $userId,
+        int $tenantId,
+        int $businessId,
+        string $name
+    ): void {
+        if ($userId <= 0) {
+            throw new RuntimeException(
+                'A valid user is required.'
+            );
+        }
+
+        if ($tenantId <= 0) {
+            throw new RuntimeException(
+                'A valid account is required.'
+            );
+        }
+
+        if ($businessId <= 0) {
+            throw new RuntimeException(
+                'A valid business is required.'
+            );
+        }
+
+        $name = trim($name);
+
+        if ($name === '') {
+            throw new RuntimeException(
+                'Business name is required.'
+            );
+        }
+
+        if (mb_strlen($name) > 255) {
+            throw new RuntimeException(
+                'Business name cannot exceed 255 characters.'
+            );
+        }
+
+        if (!$this->authorization->canManageBusiness(
+            $userId,
+            $tenantId,
+            $businessId
+        )) {
+            throw new RuntimeException(
+                'You do not have permission to manage this business.'
+            );
+        }
+
+        $business = $this->businesses->find($businessId);
+
+        if ($business === null) {
+            throw new RuntimeException(
+                'Business not found.'
+            );
+        }
+
+        if ((int) $business['tenant_id'] !== $tenantId) {
+            throw new RuntimeException(
+                'Business does not belong to this account.'
+            );
+        }
+
+        $this->businesses->updateName(
+            $businessId,
+            $name
+        );
     }
 }
