@@ -38,6 +38,54 @@ class AuthorizationService
     }
 
     /**
+     * Get a user's role within a tenant.
+     */
+    public function tenantRole(
+        int $userId,
+        int $tenantId
+    ): ?string {
+        $stmt = $this->db->prepare(
+            'SELECT role
+             FROM tenant_users
+             WHERE user_id = :user_id
+               AND tenant_id = :tenant_id
+             LIMIT 1'
+        );
+
+        $stmt->execute([
+            'user_id' => $userId,
+            'tenant_id' => $tenantId
+        ]);
+
+        $role = $stmt->fetchColumn();
+
+        return $role !== false
+            ? (string) $role
+            : null;
+    }
+
+    /**
+     * Determine whether a user can manage a tenant.
+     *
+     * Owners and admins can manage the account.
+     */
+    public function canManageTenant(
+        int $userId,
+        int $tenantId
+    ): bool {
+        $role = $this->tenantRole(
+            $userId,
+            $tenantId
+        );
+
+        return in_array(
+            $role,
+            ['owner', 'admin'],
+            true
+        );
+    }
+
+    /**
      * Determine whether a user can access a business
      * within a specific tenant.
      */

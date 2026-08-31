@@ -6,6 +6,8 @@ use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\DashboardController;
 use App\Controllers\AccountController;
+use App\Controllers\BusinessController;
+use App\Controllers\UserController;
 use App\Controllers\HomeController;
 use App\Controllers\OnboardingController;
 use App\Controllers\ContextController;
@@ -23,8 +25,16 @@ return static function (Router $router): void {
     $router->post('/register', [RegisterController::class, 'register']);
 
     $router->get('/dashboard', [DashboardController::class, 'index']);
-    
+
     $router->get('/account', [AccountController::class, 'index']);
+    $router->post('/account', [AccountController::class, 'update']);
+
+    $router->get('/businesses', [BusinessController::class, 'index']);
+    $router->post('/businesses', [BusinessController::class, 'create']);
+
+    $router->get('/users', [UserController::class, 'index']);
+    $router->get('/users/new', [UserController::class, 'create']);
+    $router->post('/users', [UserController::class, 'store']);
 
     $router->post('/onboarding', [OnboardingController::class, 'create']);
 

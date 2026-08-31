@@ -55,4 +55,51 @@ class Tenant
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * Add a user to a tenant.
+     */
+    public function addUser(
+        int $tenantId,
+        int $userId,
+        string $role = 'member'
+    ): void {
+        $stmt = $this->db->prepare(
+            'INSERT INTO tenant_users (
+                tenant_id,
+                user_id,
+                role
+            )
+            VALUES (
+                :tenant_id,
+                :user_id,
+                :role
+            )'
+        );
+
+        $stmt->execute([
+            'tenant_id' => $tenantId,
+            'user_id' => $userId,
+            'role' => $role
+        ]);
+    }
+
+    /**
+     * Update a tenant name.
+     */
+    public function updateName(
+        int $tenantId,
+        string $name
+    ): void {
+        $stmt = $this->db->prepare(
+            'UPDATE tenants
+             SET name = :name
+             WHERE id = :tenant_id'
+        );
+
+        $stmt->execute([
+            'tenant_id' => $tenantId,
+            'name' => $name
+        ]);
+    }
 }

@@ -30,7 +30,7 @@ try {
 
     echo "Tenant ID: {$tenantId}\n";
 
-    echo "\nAdding User #1 to tenant...\n";
+    echo "\nAdding User #1 to tenant as owner...\n";
 
     $stmt = $db->prepare(
         "INSERT INTO tenant_users (tenant_id, user_id, role)
@@ -43,7 +43,39 @@ try {
         'role' => 'owner'
     ]);
 
-    echo "Tenant membership created.\n";
+    echo "Owner membership created.\n";
+
+    echo "\nTesting tenant access...\n";
+
+    if (!$authorization->canAccessTenant(1, $tenantId)) {
+        throw new RuntimeException(
+            'Tenant access was incorrectly denied.'
+        );
+    }
+
+    echo "Tenant access granted correctly.\n";
+
+    echo "\nTesting tenant role...\n";
+
+    $role = $authorization->tenantRole(1, $tenantId);
+
+    if ($role !== 'owner') {
+        throw new RuntimeException(
+            "Expected owner role, got: {$role}"
+        );
+    }
+
+    echo "Owner role detected correctly.\n";
+
+    echo "\nTesting tenant management access...\n";
+
+    if (!$authorization->canManageTenant(1, $tenantId)) {
+        throw new RuntimeException(
+            'Owner management access was incorrectly denied.'
+        );
+    }
+
+    echo "Owner management access granted correctly.\n";
 
     echo "\nCreating test business...\n";
 
@@ -61,7 +93,7 @@ try {
 
     echo "Business ID: {$businessId}\n";
 
-    echo "\nAdding User #1 to business...\n";
+    echo "\nAdding User #1 to business as owner...\n";
 
     $stmt = $db->prepare(
         "INSERT INTO business_users (business_id, user_id, role)
@@ -75,16 +107,6 @@ try {
     ]);
 
     echo "Business membership created.\n";
-
-    echo "\nTesting tenant access...\n";
-
-    if (!$authorization->canAccessTenant(1, $tenantId)) {
-        throw new RuntimeException(
-            'Tenant access was incorrectly denied.'
-        );
-    }
-
-    echo "Tenant access granted correctly.\n";
 
     echo "\nTesting business access...\n";
 

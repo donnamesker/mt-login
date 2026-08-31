@@ -76,4 +76,24 @@ class Business
 
         return $stmt->fetchAll();
     }
+
+        /**
+         * Create a business within a tenant.
+         */
+        public function create(
+            int $tenantId,
+            string $name
+        ): int {
+            $stmt = $this->db->prepare(
+                'INSERT INTO businesses (tenant_id, name)
+                VALUES (:tenant_id, :name)'
+            );
+
+            $stmt->execute([
+                'tenant_id' => $tenantId,
+                'name' => trim($name)
+            ]);
+
+            return (int) $this->db->lastInsertId();
+        }
 }

@@ -57,6 +57,58 @@ class User
     }
 
     /**
+     * Get users belonging to a tenant.
+     */
+    public function forTenant(int $tenantId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT
+                u.id,
+                u.name,
+                u.email,
+                tu.role,
+                tu.created_at
+             FROM users u
+             INNER JOIN tenant_users tu
+                 ON tu.user_id = u.id
+             WHERE tu.tenant_id = :tenant_id
+             ORDER BY u.name'
+        );
+
+        $stmt->execute([
+            'tenant_id' => $tenantId
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Get owners belonging to a tenant.
+     */
+    public function ownersForTenant(int $tenantId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT
+                u.id,
+                u.name,
+                u.email
+             FROM users u
+             INNER JOIN tenant_users tu
+                 ON tu.user_id = u.id
+             WHERE tu.tenant_id = :tenant_id
+               AND tu.role = :role
+             ORDER BY u.name'
+        );
+
+        $stmt->execute([
+            'tenant_id' => $tenantId,
+            'role' => 'owner'
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Create a new user.
      */
     public function create(
