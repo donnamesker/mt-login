@@ -60,6 +60,7 @@ return static function (Router $router): void {
     $router->get('/users/new', [UserController::class, 'create']);
     $router->post('/users', [UserController::class, 'store']);
 
+    $router->get('/onboarding', [OnboardingController::class, 'show']);
     $router->post('/onboarding', [OnboardingController::class, 'create']);
 
     $router->post(

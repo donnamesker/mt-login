@@ -58,6 +58,10 @@ $title = $title ?? 'Mesker Financial';
                 Account
             </a>
 
+            <a href="/businesses" class="btn btn-outline-secondary">
+                Businesses
+            </a>
+
             <form
                 method="POST"
                 action="/logout"
