@@ -4,24 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\Services\ContextService;
 use App\Services\UserService;
-use App\Support\Auth;
 use App\Support\Csrf;
 use App\Support\View;
 use RuntimeException;
 
-class UserController
+class UserController extends AuthenticatedController
 {
-    private Auth $auth;
-    private ContextService $context;
     private UserService $users;
     private Csrf $csrf;
 
     public function __construct()
     {
-        $this->auth = new Auth();
-        $this->context = new ContextService();
+        parent::__construct();
+
         $this->users = new UserService();
         $this->csrf = new Csrf();
     }
@@ -31,17 +27,7 @@ class UserController
      */
     public function index(): void
     {
-        if (!$this->auth->check()) {
-            header('Location: /login');
-            exit;
-        }
-
-        $context = $this->context->current();
-
-        if ($context === null) {
-            header('Location: /onboarding');
-            exit;
-        }
+        $context = $this->requireContext();
 
         $tenantId = (int) $context['tenant']['id'];
         $userId = (int) $this->auth->id();
@@ -72,17 +58,7 @@ class UserController
      */
     public function create(): void
     {
-        if (!$this->auth->check()) {
-            header('Location: /login');
-            exit;
-        }
-
-        $context = $this->context->current();
-
-        if ($context === null) {
-            header('Location: /onboarding');
-            exit;
-        }
+        $context = $this->requireContext();
 
         View::render('users/create', [
             'context' => $context,
@@ -98,17 +74,7 @@ class UserController
      */
     public function store(): void
     {
-        if (!$this->auth->check()) {
-            header('Location: /login');
-            exit;
-        }
-
-        $context = $this->context->current();
-
-        if ($context === null) {
-            header('Location: /onboarding');
-            exit;
-        }
+        $context = $this->requireContext();
 
         $token = $_POST['_csrf_token'] ?? null;
 

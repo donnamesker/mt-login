@@ -6,24 +6,20 @@ namespace App\Controllers;
 
 use App\Services\AccountService;
 use App\Services\AuthorizationService;
-use App\Services\ContextService;
-use App\Support\Auth;
 use App\Support\Csrf;
 use App\Support\View;
 use RuntimeException;
 
-class AccountController
+class AccountController extends AuthenticatedController
 {
-    private Auth $auth;
-    private ContextService $context;
     private AccountService $account;
     private AuthorizationService $authorization;
     private Csrf $csrf;
 
     public function __construct()
     {
-        $this->auth = new Auth();
-        $this->context = new ContextService();
+        parent::__construct();
+
         $this->account = new AccountService();
         $this->authorization = new AuthorizationService();
         $this->csrf = new Csrf();
@@ -34,17 +30,7 @@ class AccountController
      */
     public function index(): void
     {
-        if (!$this->auth->check()) {
-            header('Location: /login');
-            exit;
-        }
-
-        $context = $this->context->current();
-
-        if ($context === null) {
-            header('Location: /onboarding');
-            exit;
-        }
+        $context = $this->requireContext();
 
         $userId = (int) $this->auth->id();
         $tenantId = (int) $context['tenant']['id'];
@@ -69,17 +55,7 @@ class AccountController
      */
     public function update(): void
     {
-        if (!$this->auth->check()) {
-            header('Location: /login');
-            exit;
-        }
-
-        $context = $this->context->current();
-
-        if ($context === null) {
-            header('Location: /onboarding');
-            exit;
-        }
+        $context = $this->requireContext();
 
         $token = $_POST['_csrf_token'] ?? null;
 
