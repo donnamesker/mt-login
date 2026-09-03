@@ -488,8 +488,7 @@ class BusinessUserService
         );
 
         if (
-            count($owners) <= 1
-            && isset($owners[0])
+            count($owners) === 1
             && (int) $owners[0]['id'] === $targetUserId
         ) {
             throw new RuntimeException(

@@ -10,140 +10,266 @@ use App\Services\AuthorizationService;
 $db = Database::connection();
 $authorization = new AuthorizationService();
 
+function assertTrue(bool $condition, string $message): void
+{
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
+}
+
+function assertFalse(bool $condition, string $message): void
+{
+    assertTrue(!$condition, $message);
+}
+
+function createTestUser(PDO $db, string $label): int
+{
+    $statement = $db->prepare(
+        'INSERT INTO users (name, email, password_hash)
+         VALUES (:name, :email, :password_hash)'
+    );
+
+    $email = 'authorization-' . $label . '-' . bin2hex(random_bytes(6)) . '@example.test';
+
+    $statement->execute([
+        'name' => 'Authorization ' . $label,
+        'email' => $email,
+        'password_hash' => password_hash('TestPassword123!', PASSWORD_DEFAULT)
+    ]);
+
+    return (int) $db->lastInsertId();
+}
+
+function createTenant(PDO $db, string $name): int
+{
+    $statement = $db->prepare(
+        'INSERT INTO tenants (name) VALUES (:name)'
+    );
+
+    $statement->execute(['name' => $name]);
+
+    return (int) $db->lastInsertId();
+}
+
+function addTenantUser(PDO $db, int $tenantId, int $userId, string $role): void
+{
+    $statement = $db->prepare(
+        'INSERT INTO tenant_users (tenant_id, user_id, role)
+         VALUES (:tenant_id, :user_id, :role)'
+    );
+
+    $statement->execute([
+        'tenant_id' => $tenantId,
+        'user_id' => $userId,
+        'role' => $role
+    ]);
+}
+
+function createBusiness(PDO $db, int $tenantId, string $name): int
+{
+    $statement = $db->prepare(
+        'INSERT INTO businesses (tenant_id, name)
+         VALUES (:tenant_id, :name)'
+    );
+
+    $statement->execute([
+        'tenant_id' => $tenantId,
+        'name' => $name
+    ]);
+
+    return (int) $db->lastInsertId();
+}
+
+function addBusinessUser(
+    PDO $db,
+    int $businessId,
+    int $userId,
+    string $role
+): void {
+    $statement = $db->prepare(
+        'INSERT INTO business_users (business_id, user_id, role)
+         VALUES (:business_id, :user_id, :role)'
+    );
+
+    $statement->execute([
+        'business_id' => $businessId,
+        'user_id' => $userId,
+        'role' => $role
+    ]);
+}
+
 echo "Starting authorization tests...\n";
 
 $db->beginTransaction();
 
 try {
-    echo "\nCreating test tenant...\n";
+    $ownerId = createTestUser($db, 'owner');
+    $memberId = createTestUser($db, 'member');
+    $otherOwnerId = createTestUser($db, 'other-owner');
 
-    $stmt = $db->prepare(
-        "INSERT INTO tenants (name)
-         VALUES (:name)"
+    $tenantOneId = createTenant($db, 'Authorization Tenant One');
+    $tenantTwoId = createTenant($db, 'Authorization Tenant Two');
+
+    addTenantUser($db, $tenantOneId, $ownerId, 'owner');
+    addTenantUser($db, $tenantOneId, $memberId, 'member');
+    addTenantUser($db, $tenantTwoId, $otherOwnerId, 'owner');
+
+    $businessOneId = createBusiness(
+        $db,
+        $tenantOneId,
+        'Authorization Business One'
     );
 
-    $stmt->execute([
-        'name' => 'Authorization Test Tenant'
-    ]);
-
-    $tenantId = (int) $db->lastInsertId();
-
-    echo "Tenant ID: {$tenantId}\n";
-
-    echo "\nAdding User #1 to tenant as owner...\n";
-
-    $stmt = $db->prepare(
-        "INSERT INTO tenant_users (tenant_id, user_id, role)
-         VALUES (:tenant_id, :user_id, :role)"
+    $businessTwoId = createBusiness(
+        $db,
+        $tenantTwoId,
+        'Authorization Business Two'
     );
 
-    $stmt->execute([
-        'tenant_id' => $tenantId,
-        'user_id' => 1,
-        'role' => 'owner'
-    ]);
-
-    echo "Owner membership created.\n";
-
-    echo "\nTesting tenant access...\n";
-
-    if (!$authorization->canAccessTenant(1, $tenantId)) {
-        throw new RuntimeException(
-            'Tenant access was incorrectly denied.'
-        );
-    }
-
-    echo "Tenant access granted correctly.\n";
-
-    echo "\nTesting tenant role...\n";
-
-    $role = $authorization->tenantRole(1, $tenantId);
-
-    if ($role !== 'owner') {
-        throw new RuntimeException(
-            "Expected owner role, got: {$role}"
-        );
-    }
-
-    echo "Owner role detected correctly.\n";
-
-    echo "\nTesting tenant management access...\n";
-
-    if (!$authorization->canManageTenant(1, $tenantId)) {
-        throw new RuntimeException(
-            'Owner management access was incorrectly denied.'
-        );
-    }
-
-    echo "Owner management access granted correctly.\n";
-
-    echo "\nCreating test business...\n";
-
-    $stmt = $db->prepare(
-        "INSERT INTO businesses (tenant_id, name)
-         VALUES (:tenant_id, :name)"
+    addBusinessUser(
+        $db,
+        $businessOneId,
+        $ownerId,
+        'owner'
     );
 
-    $stmt->execute([
-        'tenant_id' => $tenantId,
-        'name' => 'Authorization Test Business'
-    ]);
-
-    $businessId = (int) $db->lastInsertId();
-
-    echo "Business ID: {$businessId}\n";
-
-    echo "\nAdding User #1 to business as owner...\n";
-
-    $stmt = $db->prepare(
-        "INSERT INTO business_users (business_id, user_id, role)
-         VALUES (:business_id, :user_id, :role)"
+    addBusinessUser(
+        $db,
+        $businessOneId,
+        $memberId,
+        'member'
     );
 
-    $stmt->execute([
-        'business_id' => $businessId,
-        'user_id' => 1,
-        'role' => 'owner'
-    ]);
+    addBusinessUser(
+        $db,
+        $businessTwoId,
+        $otherOwnerId,
+        'owner'
+    );
 
-    echo "Business membership created.\n";
+    echo "Testing tenant isolation...\n";
+    assertTrue(
+        $authorization->canAccessTenant($ownerId, $tenantOneId),
+        'Tenant owner should access their tenant.'
+    );
+    assertFalse(
+        $authorization->canAccessTenant($ownerId, $tenantTwoId),
+        'User must not access another tenant.'
+    );
 
-    echo "\nTesting business access...\n";
-
-    if (
-        !$authorization->canAccessBusiness(
-            1,
-            $tenantId,
-            $businessId
-        )
-    ) {
-        throw new RuntimeException(
-            'Business access was incorrectly denied.'
-        );
-    }
-
-    echo "Business access granted correctly.\n";
-
-    echo "\nTesting invalid business access...\n";
-
-    if (
+    echo "Testing tenant-level business access...\n";
+    assertTrue(
         $authorization->canAccessBusiness(
-            1,
-            $tenantId,
-            999999
-        )
-    ) {
-        throw new RuntimeException(
-            'Invalid business access was incorrectly granted.'
-        );
-    }
+            $ownerId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Tenant owner should access businesses in their tenant.'
+    );
+    assertTrue(
+        $authorization->canManageBusiness(
+            $ownerId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Tenant owner should manage businesses in their tenant.'
+    );
+    assertFalse(
+        $authorization->canAccessBusiness(
+            $ownerId,
+            $tenantOneId,
+            $businessTwoId
+        ),
+        'Tenant owner must not access a business in another tenant.'
+    );
 
-    echo "Invalid business access rejected correctly.\n";
+    echo "Testing explicit business membership...\n";
+    assertTrue(
+        $authorization->canAccessBusiness(
+            $memberId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Tenant member with business membership should have access.'
+    );
+    assertFalse(
+        $authorization->canManageBusiness(
+            $memberId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Business member should not have management access.'
+    );
+
+    echo "Testing cross-tenant business ID protection...\n";
+    assertFalse(
+        $authorization->canAccessBusiness(
+            $otherOwnerId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'A user from another tenant must not access this business.'
+    );
+    assertFalse(
+        $authorization->canManageBusiness(
+            $otherOwnerId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'A user from another tenant must not manage this business.'
+    );
+
+    echo "Testing stale business membership protection...\n";
+    $statement = $db->prepare(
+        'DELETE FROM tenant_users
+         WHERE tenant_id = :tenant_id
+           AND user_id = :user_id'
+    );
+
+    $statement->execute([
+        'tenant_id' => $tenantOneId,
+        'user_id' => $memberId
+    ]);
+
+    assertFalse(
+        $authorization->canAccessBusiness(
+            $memberId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Business membership must not survive loss of tenant membership.'
+    );
+    assertFalse(
+        $authorization->canManageBusiness(
+            $memberId,
+            $tenantOneId,
+            $businessOneId
+        ),
+        'Stale business membership must not grant management access.'
+    );
+
+    echo "Testing business role lookup isolation...\n";
+    assertTrue(
+        $authorization->businessRole(
+            $ownerId,
+            $tenantOneId,
+            $businessOneId
+        ) === 'owner',
+        'Owner business role should be returned correctly.'
+    );
+    assertTrue(
+        $authorization->businessRole(
+            $ownerId,
+            $tenantTwoId,
+            $businessTwoId
+        ) === null,
+        'Business role lookup must respect tenant boundaries.'
+    );
 
     $db->rollBack();
 
-    echo "\nAuthorization tests passed.\n";
-} catch (\Throwable $e) {
+    echo "Authorization tests passed.\n";
+} catch (Throwable $e) {
     if ($db->inTransaction()) {
         $db->rollBack();
     }

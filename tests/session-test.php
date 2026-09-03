@@ -8,27 +8,49 @@ use App\Services\SessionService;
 
 $session = new SessionService();
 
-$session->start();
+try {
+    $session->start();
 
-echo "Session started.\n";
+    echo "Session started.\n";
 
-$session->login(1);
+    $session->login(1);
 
-if (!$session->isAuthenticated()) {
+    if (!$session->isAuthenticated()) {
+        throw new RuntimeException('User was not authenticated.');
+    }
+
+    echo "User is authenticated.\n";
+    echo "User ID: " . $session->userId() . "\n";
+
+    $session->setTenantId(123);
+    $session->setBusinessId(456);
+
+    $session->login(1);
+
+    if ($session->tenantId() !== null) {
+        throw new RuntimeException(
+            'Tenant context survived a new login.'
+        );
+    }
+
+    if ($session->businessId() !== null) {
+        throw new RuntimeException(
+            'Business context survived a new login.'
+        );
+    }
+
+    echo "Old tenant/business context cleared on login.\n";
+
+    $session->logout();
+
+    if ($session->isAuthenticated()) {
+        throw new RuntimeException('User is still authenticated.');
+    }
+
+    echo "User logged out successfully.\n";
+
+    ob_end_flush();
+} catch (Throwable $e) {
     ob_end_clean();
-    exit("ERROR: User was not authenticated.\n");
+    throw $e;
 }
-
-echo "User is authenticated.\n";
-echo "User ID: " . $session->userId() . "\n";
-
-$session->logout();
-
-if ($session->isAuthenticated()) {
-    ob_end_clean();
-    exit("ERROR: User is still authenticated.\n");
-}
-
-echo "User logged out successfully.\n";
-
-ob_end_flush();

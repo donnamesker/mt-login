@@ -98,6 +98,9 @@ class AuthorizationService
              FROM business_users bu
              INNER JOIN businesses b
                  ON b.id = bu.business_id
+             INNER JOIN tenant_users tu
+                 ON tu.tenant_id = b.tenant_id
+                AND tu.user_id = bu.user_id
              WHERE bu.user_id = :user_id
                AND bu.business_id = :business_id
                AND b.tenant_id = :tenant_id

@@ -285,7 +285,7 @@ class UserService
         $owners = $this->users->ownersForTenant($tenantId);
 
         if (
-            count($owners) <= 1
+            count($owners) === 1
             && (int) $owners[0]['id'] === $targetUserId
         ) {
             throw new RuntimeException(

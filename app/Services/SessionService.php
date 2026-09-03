@@ -55,6 +55,9 @@ class SessionService
 
         session_regenerate_id(true);
 
+        // Never carry tenant/business context across a login.
+        unset($_SESSION['tenant_id'], $_SESSION['business_id']);
+
         $_SESSION['user_id'] = $userId;
         $_SESSION['last_activity'] = time();
     }
