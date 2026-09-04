@@ -19,13 +19,13 @@ $canManage = $canManage ?? false;
                 Businesses
             </h1>
 
-            <p class="text-muted mb-0">
+            <h4 class="mb-0"> <span class="fs-6">for:</span> <span class="text-primary">
                 <?= htmlspecialchars(
                     $context['tenant']['name'],
                     ENT_QUOTES,
                     'UTF-8'
-                ) ?>
-            </p>
+                ) ?></span>
+            </h4>
 
         </div>
 
@@ -33,7 +33,7 @@ $canManage = $canManage ?? false;
             href="/dashboard"
             class="btn btn-outline-secondary"
         >
-            Dashboard
+            <i class="bi bi-speedometer2 me-1"></i>Dashboard
         </a>
 
     </div>
@@ -116,7 +116,7 @@ $canManage = $canManage ?? false;
                                                 href="/businesses/edit?id=<?= (int) $business['id'] ?>"
                                                 class="btn btn-sm btn-outline-secondary"
                                             >
-                                                Edit
+                                                <i class="bi bi-pencil-fill me-1"></i>Edit
                                             </a>
 
                                         <?php endif; ?>
@@ -158,7 +158,7 @@ $canManage = $canManage ?? false;
                                                         href="/businesses/users?id=<?= (int) $business['id'] ?>"
                                                         class="btn btn-sm btn-outline-secondary"
                                                     >
-                                                        Users
+                                                        <i class="bi bi-people-fill me-1"></i>Users
                                                     </a>
 
                                                 <?php endif; ?>
@@ -167,7 +167,7 @@ $canManage = $canManage ?? false;
                                                     type="submit"
                                                     class="btn btn-sm btn-outline-primary"
                                                 >
-                                                    Switch
+                                                    <i class="bi bi-repeat me-1"></i>Switch
                                                 </button>
 
                                             </form>
@@ -246,7 +246,7 @@ $canManage = $canManage ?? false;
                                 type="submit"
                                 class="btn btn-primary"
                             >
-                                Add Business
+                                <i class="bi bi-plus-lg me-1"></i>Add Business
                             </button>
 
                         </form>

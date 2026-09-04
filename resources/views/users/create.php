@@ -126,7 +126,7 @@ $title = 'Add User';
                     type="submit"
                     class="btn btn-primary"
                 >
-                    Add User
+                    <i class="bi bi-plus-lg me-1"></i>Add User
                 </button>
 
                 <a

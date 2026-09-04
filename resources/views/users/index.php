@@ -20,7 +20,7 @@ $title = 'Users';
         </div>
 
         <a href="/users/new" class="btn btn-primary">
-            Add User
+            <i class="bi bi-plus-lg me-1"></i>Add User
         </a>
     </div>
 

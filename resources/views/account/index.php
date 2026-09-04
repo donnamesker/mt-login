@@ -21,7 +21,24 @@ $canManage = in_array(
 $accountName = $name ?? $tenant['name'];
 ?>
 
-<h1 class="mb-4">Account</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1 class="mb-4">
+                Account
+            </h1>
+
+        </div>
+
+        <a
+            href="/onboarding"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-people-fill me-1"></i>Register
+        </a>
+
+</div>
 
 <?php if ($success !== null): ?>
 

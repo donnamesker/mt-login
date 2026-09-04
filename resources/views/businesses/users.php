@@ -16,29 +16,13 @@ $canManage = $canManage ?? false;
         <div>
             <h1 class="mb-1">Business Users</h1>
 
-            <p class="text-muted mb-0">
+            <h3 class="text-muted mb-0">
                 <?= htmlspecialchars(
                     $business['name'],
                     ENT_QUOTES,
                     'UTF-8'
                 ) ?>
-            </p>
-        </div>
-
-        <div class="d-flex gap-2">
-            <a
-                href="/businesses"
-                class="btn btn-outline-secondary"
-            >
-                Businesses
-            </a>
-
-            <a
-                href="/dashboard"
-                class="btn btn-outline-secondary"
-            >
-                Dashboard
-            </a>
+            </h3>
         </div>
     </div>
 
@@ -229,7 +213,7 @@ $canManage = $canManage ?? false;
                                                         type="submit"
                                                         class="btn btn-sm btn-outline-danger"
                                                     >
-                                                        Remove
+                                                        <i class="bi bi-x-lg me-1"></i>Remove
                                                     </button>
 
                                                 </form>
@@ -394,7 +378,7 @@ $canManage = $canManage ?? false;
                                     type="submit"
                                     class="btn btn-primary"
                                 >
-                                    Add User
+                                    <i class="bi bi-plus-lg me-1"></i>Add User
                                 </button>
 
                             </form>
