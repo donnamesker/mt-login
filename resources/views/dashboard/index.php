@@ -9,6 +9,7 @@ $contextTenant = $context['tenant'];
 $contextBusiness = $context['business'];
 $availableTenants = $context['availableTenants'];
 $availableBusinesses = $context['availableBusinesses'];
+
 ?>
 
     <?php if (

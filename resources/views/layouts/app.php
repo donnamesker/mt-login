@@ -6,6 +6,8 @@ declare(strict_types=1);
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 $title = $title ?? 'Mesker Financial';
+
+$content = $content ?? 'No content available.';
 ?>
 
 <!DOCTYPE html>
