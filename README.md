@@ -301,6 +301,8 @@ When starting a new application from this foundation:
     # Bash
     git add .
     git commit -m "Initialize application from multi-tenant foundation"
+    
+    git push -u origin main
     ```
 14. Create and connect the new GitHub repository.
 15. Begin building the application-specific functionality.
