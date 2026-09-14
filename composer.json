@@ -20,7 +20,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php -r \"@mkdir('public/assets/font', 0755, true); copy('vendor/twbs/bootstrap-icons/font/bootstrap-icons.css', 'public/assets/font/bootstrap-icons.css'); copy('vendor/twbs/bootstrap-icons/font/bootstrap-icons.woff', 'public/assets/font/bootstrap-icons.woff'); copy('vendor/twbs/bootstrap-icons/font/bootstrap-icons.woff2', 'public/assets/font/bootstrap-icons.woff2');\""
+            "php -r \"@mkdir('public/assets/css/fonts', 0755, true); copy('vendor/twbs/bootstrap-icons/font/bootstrap-icons.css', 'public/assets/font/bootstrap-icons.css'); copy('vendor/twbs/bootstrap-icons/font/fonts/bootstrap-icons.woff', 'public/assets/font/bootstrap-icons.woff'); copy('vendor/twbs/bootstrap-icons/font/fonts/bootstrap-icons.woff2', 'public/assets/font/bootstrap-icons.woff2');\""
         ]
     }
 }

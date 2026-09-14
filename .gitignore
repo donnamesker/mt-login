@@ -15,5 +15,12 @@
 # Application logs
 /storage/logs/*
 
-# my personal notes
+# PHP sessions
+/storage/sessions/*
+
+# Keep required storage directories in Git
+!/storage/logs/.gitkeep
+!/storage/sessions/.gitkeep
+
+# Personal notes
 notes.php

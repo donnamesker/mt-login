@@ -163,12 +163,12 @@ $canManage = $canManage ?? false;
 
                                                 <?php endif; ?>
 
-                                                <button
+                                                <!-- <button
                                                     type="submit"
                                                     class="btn btn-sm btn-outline-primary"
                                                 >
                                                     <i class="bi bi-repeat me-1"></i>Switch
-                                                </button>
+                                                </button> -->
 
                                             </form>
 

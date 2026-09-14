@@ -54,26 +54,116 @@ Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
+Update .env with the application's local settings and MySQL connection values.
 
 Set the MySQL connection values in `.env`.
 
 The `.env` file contains environment-specific configuration and must not be committed to Git.
 
-### 2. Install Composer Dependencies
-
+### 2. Install Dependencies
+Install PHP dependencies:
 ```bash
 composer install
 ```
 
-### 3. Run Database Migrations
+If the application uses the included frontend dependencies, install them with:
+```bash
+npm install
+```
 
-Create/configure the MySQL database specified in `.env`, then run:
+### 3. Create the MySQL Database and User 
+Log into MySQL as an administrative user:
+```bash
+mysql -u root -p
+```
+
+Create the application database:
+
+```sql
+CREATE DATABASE IF NOT EXISTS my_database;
+```
+
+Create the application-specific MySQL user:
+
+```sql
+CREATE USER IF NOT EXISTS 'my_user'@'localhost'
+IDENTIFIED BY 'YOUR_PASSWORD';
+```
+
+Grant the user access to the application database:
+
+```sql
+GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'localhost';
+```
+
+Apply the privileges:
+
+```sql
+FLUSH PRIVILEGES;
+```
+
+Verify the database exists:
+
+```sql
+SHOW DATABASES;
+```
+
+Verify the user exists:
+
+```sql
+SELECT User, Host
+FROM mysql.user
+WHERE User = 'my_user';
+```
+
+Exit MySQL:
+
+```sql
+exit
+```
+
+The database name, username, and password created here must match the corresponding DB_* values in .env.
+
+4. Verify the Database Login
+
+Before running the application migrations, verify that the new MySQL user can connect to the new database:
+
+```bash
+mysql -u my_user -p my_database
+```
+
+Enter the password configured in .env.
+
+After connecting successfully, verify the selected database:
+
+```sql
+SELECT DATABASE();
+```
+
+It should return:
+
+my_database
+
+Exit MySQL:
+
+```sql
+exit
+```
+
+5. Run Database Migrations
+
+From the application's root directory, run:
 
 ```bash
 php migrate.php
 ```
 
-### 4. Start the Local PHP Server
+The migration process creates the required foundation tables and applies the SQL migration files in:
+
+database/migrations/
+6. Start the Local PHP Server
+
+Start the development server from the application root:
 
 ```bash
 php -S localhost:8000 -t public
@@ -81,9 +171,7 @@ php -S localhost:8000 -t public
 
 The application will then be available at:
 
-```text
 http://localhost:8000
-```
 
 ## Tests
 
@@ -143,16 +231,52 @@ When starting a new application from this foundation:
 
 1. Copy the starter application into a new project directory.
 2. Remove the copied `.git` directory.
-3. Initialize a new Git repository.
+3. Initialize a new Git repository. 
+    ```bash
+    git init
+    ```
 4. Create the new application's `.env` file.
+    ```bash
+    cp .env.example .env
+    ```
 5. Create a separate database for the new application.
+    Navigate to your app's root directory in terminal.
+    mysql -u root -p -e "CREATE DATABASE your_database_name;"
+    USE your_database_name;
 6. Set the new application name and database configuration.
-7. Install dependencies.
-8. Run the migrations.
-9. Run the complete test suite.
-10. Commit the clean starting point.
-11. Create and connect the new GitHub repository.
-12. Begin building the application-specific functionality.
+7. Install PHP dependencies.
+    ```bash
+    composer install
+    ```
+    
+   Install frontend dependencies if required:
+    ```bash
+   npm install
+    ```
+8. Verify the new MySQL user's ability to connect to the new database:
+    ```bash
+    mysql -u your_user -p your_database
+    ```
+9. Run the database migrations.
+    ```bash
+    php migrate.php
+    ```
+10. Run the complete test suite.
+    ```bash
+    php tests/run.php
+    ```
+11. Start the local development server.
+    ```bash
+    php -S localhost:8000 -t public
+    ```
+12. Verify that the application loads successfully.
+13. Commit the clean starting point.
+    ```bash
+    git add .
+    git commit -m "Initialize application from multi-tenant foundation"
+    ```
+14. Create and connect the new GitHub repository.
+15. Begin building the application-specific functionality.
 
 The new application should have its own Git history, environment configuration, and database.
 
