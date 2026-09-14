@@ -52,7 +52,7 @@ See `docs/FOUNDATION.md` for the detailed tenant hierarchy, authorization rules,
 Copy `.env.example` to `.env`:
 
 ```bash
-# Language: Bash
+# Bash
 cp .env.example .env
 ```
 Update .env with the application's local settings and MySQL connection values.
@@ -64,29 +64,34 @@ The `.env` file contains environment-specific configuration and must not be comm
 ### 2. Install Dependencies
 Install PHP dependencies:
 ```bash
+# Bash
 composer install
 ```
 
 If the application uses the included frontend dependencies, install them with:
 ```bash
+# Bash
 npm install
 ```
 
 ### 3. Create the MySQL Database and User 
 Log into MySQL as an administrative user:
 ```bash
+# Bash
 mysql -u root -p
 ```
 
 Create the application database:
 
 ```sql
+# MySQL
 CREATE DATABASE IF NOT EXISTS my_database;
 ```
 
 Create the application-specific MySQL user:
 
 ```sql
+# MySQL
 CREATE USER IF NOT EXISTS 'my_user'@'localhost'
 IDENTIFIED BY 'YOUR_PASSWORD';
 ```
@@ -94,24 +99,28 @@ IDENTIFIED BY 'YOUR_PASSWORD';
 Grant the user access to the application database:
 
 ```sql
+# MySQL
 GRANT ALL PRIVILEGES ON my_database.* TO 'my_user'@'localhost';
 ```
 
 Apply the privileges:
 
 ```sql
+# MySQL
 FLUSH PRIVILEGES;
 ```
 
 Verify the database exists:
 
 ```sql
+# MySQL
 SHOW DATABASES;
 ```
 
 Verify the user exists:
 
 ```sql
+# MySQL
 SELECT User, Host
 FROM mysql.user
 WHERE User = 'my_user';
@@ -120,6 +129,7 @@ WHERE User = 'my_user';
 Exit MySQL:
 
 ```sql
+# MySQL
 exit
 ```
 
@@ -130,6 +140,7 @@ The database name, username, and password created here must match the correspond
 Before running the application migrations, verify that the new MySQL user can connect to the new database:
 
 ```bash
+# Bash
 mysql -u my_user -p my_database
 ```
 
@@ -138,6 +149,7 @@ Enter the password configured in .env.
 After connecting successfully, verify the selected database:
 
 ```sql
+# MySQL
 SELECT DATABASE();
 ```
 
@@ -148,6 +160,7 @@ my_database
 Exit MySQL:
 
 ```sql
+# MySQL
 exit
 ```
 
@@ -156,6 +169,7 @@ exit
 From the application's root directory, run:
 
 ```bash
+# Bash
 php migrate.php
 ```
 
@@ -167,18 +181,21 @@ database/migrations/
 Start the development server from the application root:
 
 ```bash
+# Bash
 php -S localhost:8000 -t public
 ```
 
 The application will then be available at:
-
+```
 http://localhost:8000
+```
 
 ## Tests
 
 Run the complete test suite:
 
 ```bash
+# Bash
 php tests/run.php
 ```
 
@@ -234,10 +251,12 @@ When starting a new application from this foundation:
 2. Remove the copied `.git` directory.
 3. Initialize a new Git repository. 
     ```bash
+    # Bash
     git init
     ```
 4. Create the new application's `.env` file.
     ```bash
+    # Bash
     cp .env.example .env
     ```
 5. Create a separate database for the new application.
@@ -247,32 +266,39 @@ When starting a new application from this foundation:
 6. Set the new application name and database configuration.
 7. Install PHP dependencies.
     ```bash
+    # Bash
     composer install
     ```
     
    Install frontend dependencies if required:
     ```bash
-   npm install
+    # Bash
+    npm install
     ```
 8. Verify the new MySQL user's ability to connect to the new database:
-    ```bash
+    ```sql
+    # MySQL
     mysql -u your_user -p your_database
     ```
 9. Run the database migrations.
     ```bash
+    # Bash
     php migrate.php
     ```
 10. Run the complete test suite.
     ```bash
+    # Bash
     php tests/run.php
     ```
 11. Start the local development server.
     ```bash
+    # Bash
     php -S localhost:8000 -t public
     ```
 12. Verify that the application loads successfully.
 13. Commit the clean starting point.
     ```bash
+    # Bash
     git add .
     git commit -m "Initialize application from multi-tenant foundation"
     ```
