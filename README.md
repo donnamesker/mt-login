@@ -52,6 +52,7 @@ See `docs/FOUNDATION.md` for the detailed tenant hierarchy, authorization rules,
 Copy `.env.example` to `.env`:
 
 ```bash
+# Language: Bash
 cp .env.example .env
 ```
 Update .env with the application's local settings and MySQL connection values.
