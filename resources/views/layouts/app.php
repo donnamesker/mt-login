@@ -44,6 +44,8 @@ $content = $content ?? 'No content available.';
         rel="stylesheet"
     >
 
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+
 </head>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -57,25 +59,17 @@ $content = $content ?? 'No content available.';
         Mesker Financial
       </a>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item me-2">
-          <a href="/dashboard" class="btn <?= $currentPath === '/dashboard' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
-                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dashboard
             </a>
-        </li>
-        <li class="nav-item me-2">
-          <a href="/account" class="btn <?= $currentPath === '/account' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
-                <i class="bi bi-person-fill me-1"></i>Account
-            </a>
-        </li>
-        <li class="nav-item me-2">
-          <a href="/businesses" class="btn <?= str_starts_with($currentPath, '/businesses') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
-                <i class="bi bi-building-fill me-1"></i>Businesses
-            </a>
-        </li>
-        <li class="nav-item me-2">
-          <a href="/users" class="btn <?= str_starts_with($currentPath, '/users') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
-                <i class="bi bi-people-fill me-1"></i>Users
-            </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item<?= str_starts_with($currentPath, '/dashboard') ? ' active fw-medium' : '' ?>" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item<?= str_starts_with($currentPath, '/account') ? ' active fw-medium' : '' ?>" href="/account"><i class="bi bi-person-fill me-1"></i>Account</a></li>
+            <li><a class="dropdown-item<?= str_starts_with($currentPath, '/businesses') ? ' active fw-medium' : '' ?>" href="/businesses"><i class="bi bi-building-fill me-1"></i>Businesses</a></li>
+            <li><a class="dropdown-item<?= str_starts_with($currentPath, '/users') ? ' active fw-medium' : '' ?>" href="/users"><i class="bi bi-people-fill me-1"></i>Users</a></li>
+          </ul>
         </li>
       </ul>
       <form class="d-flex"  method="POST" action="/logout">
