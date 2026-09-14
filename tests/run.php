@@ -9,6 +9,7 @@ $tests = [
     'context-switch-test.php',
     'csrf-test.php',
     'onboarding-test.php',
+    'password-reset-test.php',
     'session-context-test.php',
     'session-test.php',
     'user-test.php',
@@ -18,17 +19,26 @@ $php = PHP_BINARY;
 $failed = false;
 
 foreach ($tests as $test) {
+
     echo PHP_EOL;
     echo str_repeat('=', 72) . PHP_EOL;
     echo "Running {$test}" . PHP_EOL;
     echo str_repeat('=', 72) . PHP_EOL;
 
-    $command = escapeshellarg($php) . ' ' . escapeshellarg(__DIR__ . '/' . $test);
-    passthru($command, $exitCode);
+    $command = escapeshellarg($php)
+        . ' '
+        . escapeshellarg(__DIR__ . '/' . $test);
+
+    passthru(
+        $command,
+        $exitCode
+    );
 
     if ($exitCode !== 0) {
         $failed = true;
+
         echo "FAILED: {$test}" . PHP_EOL;
+
         break;
     }
 

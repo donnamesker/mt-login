@@ -1,0 +1,337 @@
+To start the local development server:
+Make sure you are in the correct folder
+cd ~/Documents/htdocs/my-app
+Start the server
+php -S localhost:8000 -t public
+
+Response 1
+Part 1: Push your existing clean my-app repository to GitHub
+1. Make sure you are in the correct folder
+cd ~/Documents/htdocs/my-app
+2. Verify that this folder itself is the Git repository
+git rev-parse --show-toplevel
+It must return:
+/Users/donnamesker/Documents/htdocs/my-app
+If it returns /Users/donnamesker, stop. Do not continue.
+3. Check the repository status
+git status
+Ideally, you should see:
+On branch main
+nothing to commit, working tree clean
+If you just updated the README and have not committed it yet:
+git add README.md
+git commit -m "Add foundation documentation"
+Then run:
+git status
+again.
+4. Check whether a GitHub remote already exists
+git remote -v
+If nothing is returned, continue.
+5. Go to GitHub and create a new repository
+•	Click New repository 
+•	Repository name: choose the name you want for this starter, for example: 
+multi-tenant-php-foundation
+•	Choose Private or Public 
+•	Do not check: 
+o	Add a README file 
+o	Add .gitignore 
+o	Choose a license 
+Click Create repository.
+6. Copy the repository URL
+GitHub will show a URL similar to:
+https://github.com/YOUR-USERNAME/multi-tenant-php-foundation.git
+7. Back in Terminal, add the GitHub repository
+Replace the URL below with your actual GitHub repository URL:
+git remote add origin https://github.com/YOUR-USERNAME/multi-tenant-php-foundation.git
+8. Verify the remote
+git remote -v
+You should see origin pointing to your GitHub repository.
+9. Push the foundation to GitHub
+git push -u origin main
+If GitHub asks you to authenticate, complete the browser authentication.
+10. Verify
+Refresh your GitHub repository page. Your complete my-app foundation should now be there.
+ 
+Part 2: Use this foundation to start a new application in the future
+Assume your foundation is located at:
+~/Documents/htdocs/my-app
+and you want to create a new application called:
+client-portal
+1. Go to your projects directory
+cd ~/Documents/htdocs
+2. Copy the foundation
+cp -R my-app client-portal
+3. Enter the new application
+cd client-portal
+4. Remove the copied Git history
+rm -rf .git
+This does not affect your original my-app foundation.
+5. Remove files that should not be copied into the new project
+At minimum:
+rm -rf vendor
+rm -rf node_modules
+rm -f .DS_Store
+Your .env can stay temporarily, but you will replace its values in the next steps.
+6. Create the new Git repository
+git init
+Set the branch name:
+git branch -M main
+Verify:
+git rev-parse --show-toplevel
+It must return:
+/Users/donnamesker/Documents/htdocs/client-portal
+7. Change the application name
+Open .env in VS Code and change:
+APP_NAME="My Application"
+to:
+APP_NAME="Client Portal"
+Also change:
+APP_ENV=local
+APP_DEBUG=true
+Keep those values for local development.
+8. Create a new database
+Create a completely separate MySQL database for the new application.
+Then update .env:
+APP_ENV=local
+APP_DEBUG=true
+APP_NAME="Client Portal"
+
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=client_portal
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+Use your actual database credentials.
+9. Install the dependencies
+composer install
+If the application uses Node packages:
+npm install
+10. Run the migrations
+php migrate.php
+11. Run all foundation tests
+php tests/run.php
+All tests should pass before you start changing the application.
+12. Check .gitignore
+Before your first commit, make sure .env is ignored:
+cat .gitignore
+Your .env file should not be committed.
+13. Create the first commit for the new application
+git add .
+git commit -m "Initialize application from multi-tenant foundation"
+14. Create a new empty repository on GitHub
+Repeat the same GitHub steps:
+•	Create a new repository 
+•	Do not add a README 
+•	Do not add a .gitignore 
+•	Do not add a license 
+15. Connect the new application to its own GitHub repository
+git remote add origin https://github.com/YOUR-USERNAME/client-portal.git
+Then:
+git push -u origin main
+16. Start building the new application
+From this point forward:
+•	my-app remains your clean reusable foundation. 
+•	client-portal is a completely independent application. 
+•	Each has its own Git repository. 
+•	Each has its own GitHub repository. 
+•	Each has its own .env. 
+•	Each has its own database. 
+•	Changes to client-portal do not affect my-app. 
+Your basic future workflow
+my-app
+   ↓ copy
+new-app
+   ↓ remove .git
+new-app
+   ↓ git init
+new-app
+   ↓ configure .env and database
+new-app
+   ↓ composer install
+new-app
+   ↓ migrate
+new-app
+   ↓ run tests
+new-app
+   ↓ initial commit
+new-app
+   ↓ connect to new GitHub repository
+new-app
+   ↓ build the application
+One important correction from our earlier Git mess: always run this before git add . when starting a new app:
+git rev-parse --show-toplevel
+Make sure it shows the exact folder for the application you are working on. This prevents accidentally adding files from your entire home directory again.
+ 
+Response 2
+Part 1: Push the existing my-app repository to GitHub
+1. Make sure you are in the correct project folder
+cd ~/Documents/htdocs/my-app
+2. Confirm Git sees my-app as the repository root
+git rev-parse --show-toplevel
+It must return:
+/Users/donnamesker/Documents/htdocs/my-app
+If it returns anything else, stop there. Do not run git add, commit, or push.
+3. Check the repository status
+git status
+If you just changed the README, commit it:
+git add README.md
+git commit -m "Add foundation documentation"
+Then run:
+git status
+You want:
+nothing to commit, working tree clean
+4. Create the GitHub repository
+Go to GitHub and create a new repository.
+Suggested name:
+php-multitenant-app-foundation
+Choose:
+•	Private or Public: your choice 
+•	Do NOT initialize with a README 
+•	Do NOT add .gitignore 
+•	Do NOT add a license 
+Click Create repository.
+5. Add the GitHub repository as the remote
+GitHub will show you the repository URL. Copy the HTTPS URL.
+Then, in Terminal:
+git remote add origin PASTE-THE-GITHUB-HTTPS-URL-HERE
+For example, it will look something like:
+git remote add origin https://github.com/YOUR-USERNAME/php-multitenant-app-foundation.git
+6. Verify the remote
+git remote -v
+You should see origin twice: once for fetch and once for push.
+7. Push your repository
+git push -u origin main
+If GitHub asks you to authenticate, complete the authentication.
+8. Verify
+Refresh the GitHub repository page. Your complete my-app project should now be there.
+ 
+Part 2: Use this foundation for a future new application
+These are the steps to follow when you actually start a new app.
+1. Clone the foundation
+Choose the folder where you keep projects:
+cd ~/Documents/htdocs
+Clone the foundation:
+git clone https://github.com/YOUR-USERNAME/php-multitenant-app-foundation.git new-app-name
+Replace:
+YOUR-USERNAME
+with your GitHub username and:
+new-app-name
+with the actual folder name for the new application.
+For example:
+git clone https://github.com/YOUR-USERNAME/php-multitenant-app-foundation.git timesheet-app
+2. Enter the new application
+cd timesheet-app
+3. Remove the foundation's Git history
+rm -rf .git
+4. Create a brand-new Git repository
+git init
+5. Set the branch to main
+git branch -M main
+6. Create the new app's .env
+cp .env.example .env
+Open .env in VS Code and change the application-specific values.
+For example:
+APP_ENV=local
+APP_DEBUG=true
+APP_NAME="Timesheet App"
+
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=timesheet_app
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+7. Create the new database
+Create the MySQL database named in:
+DB_DATABASE=
+For this example:
+timesheet_app
+8. Install dependencies
+composer install
+If the new app uses the existing frontend dependencies:
+npm install
+9. Run the foundation migrations
+php migrate.php
+10. Run all tests
+php tests/run.php
+All tests should pass before you start building the new application's features.
+11. Update the README
+Change the README so it describes the new application rather than the reusable foundation.
+12. Make the first Git commit
+git add .
+git commit -m "Initialize application from multi-tenant foundation"
+Git checkpoint
+This is your first checkpoint. At this point, the new app has:
+•	Its own folder 
+•	Its own Git history 
+•	Its own .env 
+•	Its own database 
+•	Its own application name 
+•	The tested multi-tenant foundation 
+13. Create a new empty GitHub repository
+Create a new repository for the new application.
+Again, do not initialize it with:
+•	README 
+•	.gitignore 
+•	License 
+14. Connect the new application to its GitHub repository
+Copy the new repository's HTTPS URL and run:
+git remote add origin PASTE-THE-NEW-APP-GITHUB-URL-HERE
+Then:
+git push -u origin main
+15. Start building the application
+Now add the application-specific functionality on top of the foundation.
+For example:
+•	New migrations 
+•	New models 
+•	New controllers 
+•	New services 
+•	New views 
+•	New routes 
+•	New tests 
+Do not rebuild or replace the authentication, tenant separation, session context, or authorization foundation unless there is a genuine reason to change the shared infrastructure.
+Future Git workflow
+As you build, use checkpoints:
+git status
+git add .
+git commit -m "Describe the completed feature"
+git push
+That gives you one stable reusable foundation repository, while every future application gets its own independent repository and Git history.
+ 
+MySQL Terminal Commands:
+
+To see the tables in a local MySQL database directly from your Mac Terminal, use the following one-line command:
+
+mysql -u root -p -e "USE your_database_name; SHOW TABLES;"
+mysql -u root -p -e "USE my_app_dev; SHOW TABLES;"
+
+(Replace your_database_name with the actual name of your database, and change root if you use a different MySQL username.)
+Step-by-Step Methods
+You can achieve this either by running a quick single command or by logging into the interactive MySQL shell.
+Method 1: The Quick One-Liner (No Shell Login)
+This executes the query from your Mac terminal and immediately returns you to the normal terminal prompt: [1]
+1.	Open your Terminal app.
+2.	Run the command:
+
+mysql -u root -p -e "SHOW TABLES FROM your_database_name;"
+
+3.	Type your MySQL password when prompted and press Enter.
+Method 2: Inside the Interactive MySQL Shell
+If you prefer to browse your database interactively: [1]
+1.	Log in to your local MySQL server:
+
+mysql -u root -p
+
+2.	Enter your password. Your prompt will change to mysql>.
+3.	View available databases to find the right one:
+
+SHOW DATABASES;
+
+4.	Select your database:
+USE your_database_name;
+USE my_app_dev;
+
+5.	List all tables in that database:
+
+SHOW TABLES;
+
+6.	Type exit or quit to leave the shell

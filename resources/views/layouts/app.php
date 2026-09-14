@@ -46,65 +46,44 @@ $content = $content ?? 'No content available.';
 
 </head>
 
-<nav class="navbar navbar-light bg-light border-bottom">
-
-    <div class="container">
-
-        <a
-            href="/dashboard"
-            class="navbar-brand"
-        >
-            Mesker Financial
-        </a>
-
-        <div class="d-flex align-items-center gap-2">
-
-            <a href="/dashboard" class="btn <?= $currentPath === '/dashboard' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+        Mesker Financial
+      </a>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item me-2">
+          <a href="/dashboard" class="btn <?= $currentPath === '/dashboard' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
                 <i class="bi bi-speedometer2 me-1"></i>Dashboard
             </a>
-
-            <a href="/account" class="btn <?= $currentPath === '/account' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
+        </li>
+        <li class="nav-item me-2">
+          <a href="/account" class="btn <?= $currentPath === '/account' ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
                 <i class="bi bi-person-fill me-1"></i>Account
             </a>
-
-
-            <a href="/businesses" class="btn <?= str_starts_with($currentPath, '/businesses') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
+        </li>
+        <li class="nav-item me-2">
+          <a href="/businesses" class="btn <?= str_starts_with($currentPath, '/businesses') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
                 <i class="bi bi-building-fill me-1"></i>Businesses
             </a>
-
-            <a href="/users" class="btn <?= str_starts_with($currentPath, '/users') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
+        </li>
+        <li class="nav-item me-2">
+          <a href="/users" class="btn <?= str_starts_with($currentPath, '/users') ? 'btn-outline-primary' : 'btn-outline-secondary' ?>">
                 <i class="bi bi-people-fill me-1"></i>Users
             </a>
-
-            <form
-                method="POST"
-                action="/logout"
-                class="d-inline"
-            >
-
-                <input
-                    type="hidden"
-                    name="_csrf_token"
-                    value="<?= htmlspecialchars(
-                        (new \App\Support\Csrf())->token(),
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ) ?>"
-                >
-
-                <button
-                    type="submit"
-                    class="btn btn-outline-secondary"
-                >
-                    Sign Out
-                </button>
-
-            </form>
-
-        </div>
-
+        </li>
+      </ul>
+      <form class="d-flex"  method="POST" action="/logout">
+        <input type="hidden" name="_csrf_token" value="<?= htmlspecialchars((new \App\Support\Csrf())->token(), ENT_QUOTES, 'UTF-8') ?>">
+        <button type="submit" class="btn btn-outline-secondary">Sign Out</button>
+      </form>
     </div>
-
+  </div>
 </nav>
 
 <main class="container py-5">

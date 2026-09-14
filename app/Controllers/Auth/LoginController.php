@@ -9,7 +9,6 @@ use App\Services\SessionService;
 use App\Services\ContextService;
 use App\Support\Csrf;
 use App\Support\View;
-use RuntimeException;
 
 class LoginController
 {
@@ -33,11 +32,18 @@ class LoginController
     {
         $this->session->start();
 
+        $message = null;
+
+        if (($_GET['reset'] ?? '') === 'success') {
+            $message = 'Your password has been reset. You can now sign in with your new password.';
+        }
+
         View::render('auth/login', [
             'csrfToken' => $this->csrf->token(),
             'errors' => [],
+            'message' => $message,
             'email' => ''
-        ]);
+        ], null);
     }
 
     /**
@@ -119,8 +125,8 @@ class LoginController
         View::render('auth/login', [
             'csrfToken' => $this->csrf->token(),
             'errors' => [$message],
+            'message' => null,
             'email' => $email
-        ]);
+        ], null);
     }
-    
 }

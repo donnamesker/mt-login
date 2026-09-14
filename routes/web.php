@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
+use App\Controllers\Auth\ForgotPasswordController;
+use App\Controllers\Auth\ResetPasswordController;
 use App\Controllers\DashboardController;
 use App\Controllers\AccountController;
 use App\Controllers\BusinessController;
@@ -21,6 +23,26 @@ return static function (Router $router): void {
     $router->get('/login', [LoginController::class, 'show']);
     $router->post('/login', [LoginController::class, 'login']);
     $router->post('/logout', [LoginController::class, 'logout']);
+
+    $router->get(
+        '/forgot-password',
+        [ForgotPasswordController::class, 'show']
+    );
+
+    $router->post(
+        '/forgot-password',
+        [ForgotPasswordController::class, 'requestReset']
+    );
+
+    $router->get(
+        '/reset-password',
+        [ResetPasswordController::class, 'show']
+    );
+
+    $router->post(
+        '/reset-password',
+        [ResetPasswordController::class, 'reset']
+    );
 
     $router->get('/register', [RegisterController::class, 'show']);
     $router->post('/register', [RegisterController::class, 'register']);

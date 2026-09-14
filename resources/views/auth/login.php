@@ -7,6 +7,7 @@ declare(strict_types=1);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1"
@@ -38,6 +39,21 @@ declare(strict_types=1);
                     <h1 class="h3 text-center mb-4">
                         Sign In
                     </h1>
+
+                    <?php if (!empty($message)): ?>
+
+                        <div
+                            class="alert alert-success"
+                            role="alert"
+                        >
+                            <?= htmlspecialchars(
+                                $message,
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </div>
+
+                    <?php endif; ?>
 
                     <?php if (!empty($errors)): ?>
 
@@ -97,7 +113,7 @@ declare(strict_types=1);
 
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-2">
 
                             <label
                                 for="password"
@@ -115,6 +131,12 @@ declare(strict_types=1);
                                 autocomplete="current-password"
                             >
 
+                        </div>
+
+                        <div class="text-end mb-4">
+                            <a href="/forgot-password">
+                                Forgot your password?
+                            </a>
                         </div>
 
                         <button
